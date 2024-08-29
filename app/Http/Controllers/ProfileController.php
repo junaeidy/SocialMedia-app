@@ -6,8 +6,10 @@ use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
@@ -22,8 +24,40 @@ class ProfileController extends Controller
         return Inertia::render('Profile/Show', [
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => session('status'),
-            'user' => $user
+            'success' => session('success'),
+            'user' => new UserResource($user)
         ]);
+    }
+    public function updateImage(Request $request) {
+        $data = $request->validate([
+            'cover' => ['nullable', 'image'],
+            /** @var \Illuminate\Http\UploadedFile $cover */
+            'avatar' => ['nullable', 'image']
+        ]);
+
+        $user = $request->user();
+
+        $avatar = $data['avatar'] ?? null;
+        $cover = $data['cover'] ?? null;
+
+        $success = '';
+        if ($cover) {
+            if ($user->cover_path) {
+                Storage::disk('public')->delete($user->cover_path);
+            }
+            $path = $cover->store('user-'.$user->id, 'public');
+            $user->update(['cover_path' => $path]);
+            $success = 'Your cover image was updated';
+        }
+        if ($avatar) {
+            if ($user->avatar_path) {
+                Storage::disk('public')->delete($user->avatar_path);
+            }
+            $path = $avatar->store('user-'.$user->id, 'public');
+            $user->update(['avatar_path' => $path]);
+            $success = 'Your avatar image was updated';
+        }
+        return back()->with('success', $success);
     }
 
     /**
