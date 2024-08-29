@@ -104,7 +104,7 @@ function submitAvatarImage() {
             <div class="group relative bg-white">
                 <img :src="coverImageSrc || user.cover_url || 'https://images.pexels.com/photos/1293125/pexels-photo-1293125.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'"
                      class="w-full h-[200px] object-cover">
-                     <div class="absolute top-2 right-2">
+                     <div v-if="isMyProfile" class="absolute top-2 right-2">
                     <button v-if="!coverImageSrc" class="bg-gray-50 hover:bg-gray-100 text-gray-800 py-1 px-2 text-xs flex items-center opacity-0 group-hover:opacity-100">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="size-3 mr-2">
                         <path d="M12 9a3.75 3.75 0 1 0 0 7.5A3.75 3.75 0 0 0 12 9Z" />
@@ -128,7 +128,8 @@ function submitAvatarImage() {
                     <div class="flex items-center justify-center relative group/avatar -mt-[64px] ml-[48px] w-[128px] h-[128px] rounded-full">
                         <img :src="avatarImageSrc || user.avatar_url || 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?t=st=1724940896~exp=1724944496~hmac=d6e3c518f7006a0981fed325a166229e22701117330bc6a3a365075f48bc807b&w=740'"
                              class="w-full h-full object-cover rounded-full">
-                        <button
+                        <div v-if="isMyProfile">
+                            <button
                             v-if="!avatarImageSrc"
                             class="absolute left-0 top-0 right-0 bottom-0 bg-black/50 text-gray-200 rounded-full opacity-0 flex items-center justify-center group-hover/avatar:opacity-100">
                             <CameraIcon class="w-8 h-8"/>
@@ -148,26 +149,25 @@ function submitAvatarImage() {
                                 <CheckCircleIcon class="h-5 w-5"/>
                             </button>
                         </div>
+                        
+                        </div>
                     </div>
                     <div class="flex justify-between items-center flex-1 p-4">
                         <h2 class="font-bold text-lg">{{ user.name }}</h2>
-                        <PrimaryButton v-if="isMyProfile">
+                        <!-- <PrimaryButton v-if="isMyProfile">
                             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
                                  stroke="currentColor" class="w-4 h-4 mr-2">
                                 <path stroke-linecap="round" stroke-linejoin="round"
                                       d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"/>
                             </svg>
                             Edit Profile
-                        </PrimaryButton>
+                        </PrimaryButton> -->
                     </div>
                 </div>
             </div>
             <div class="border-t">
                 <TabGroup>
                     <TabList class="flex bg-white">
-                        <Tab v-if="isMyProfile" v-slot="{ selected }" as="template">
-                            <TabItems text="About" :selected="selected"/>
-                        </Tab>
                         <Tab v-slot="{ selected }" as="template">
                             <TabItems text="Posts" :selected="selected"/>
                         </Tab>
@@ -180,12 +180,12 @@ function submitAvatarImage() {
                         <Tab v-slot="{ selected }" as="template">
                             <TabItems text="Photos" :selected="selected"/>
                         </Tab>
+                        <Tab v-if="isMyProfile" v-slot="{ selected }" as="template">
+                            <TabItems text="My Profile" :selected="selected"/>
+                        </Tab>
                     </TabList>
 
                     <TabPanels class="mt-2">
-                        <TabPanel v-if="isMyProfile" >
-                            <Edit :must-verify-email="mustVerifyEmail" :status="status"/>
-                        </TabPanel>
                         <TabPanel class="bg-white p-3 shadow">
                             Posts
                         </TabPanel>
@@ -197,6 +197,9 @@ function submitAvatarImage() {
                         </TabPanel>
                         <TabPanel class="bg-white p-3 shadow">
                             Photos
+                        </TabPanel>
+                        <TabPanel v-if="isMyProfile" >
+                            <Edit :must-verify-email="mustVerifyEmail" :status="status"/>
                         </TabPanel>
                     </TabPanels>
                 </TabGroup>
