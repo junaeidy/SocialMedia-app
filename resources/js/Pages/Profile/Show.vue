@@ -67,9 +67,9 @@ function resetAvatarImage() {
 }
 function submitCoverImage() {
     showNotification.value = true
-    imagesForm.post(route('profile.updateCover'), {
+    imagesForm.post(route('profile.updateImages'), {
         onSuccess: (user) => {
-            cancelCoverImage()
+            resetCoverImage()
             setTimeout(() => {
                 showNotification.value = false
             }, 3000)

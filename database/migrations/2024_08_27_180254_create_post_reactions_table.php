@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('post_reactions', function (Blueprint $table) {
             $table->id();
             $table->foreignId('post_id')->constrained('posts');
-            $table->string('type', 100); //like, dislike, sad, laugh
+            $table->string('type'); // like, dislike, sad, laugh
             $table->foreignId('user_id')->constrained('users');
             $table->timestamp('created_at')->nullable();
         });

@@ -25,8 +25,8 @@ return new class extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('username');
-            $table->dropColumn('cover_path', 1024)->nullable();
-            $table->dropColumn('avatar_path', 1024)->nullable();
+            $table->dropColumn('cover_path');
+            $table->dropColumn('avatar_path');
         });
     }
 };

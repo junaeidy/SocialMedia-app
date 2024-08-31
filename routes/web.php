@@ -27,12 +27,12 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth')->group(function () {
 //     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+        Route::post('/profile/update-images', [ProfileController::class, 'updateImage'])->name('profile.updateImages');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
-    Route::post('/post', [PostController::class, 'store'])
-    ->name('post.create');
-    Route::put('/post/{post}', [PostController::class, 'update'])
-        ->name('post.update');
+    Route::post('/post', [PostController::class, 'store'])->name('post.create');
+    Route::put('/post/{post}', [PostController::class, 'update'])->name('post.update');
 });
+    Route::delete('/post/{post}', [PostController::class, 'destroy'])->name('post.destroy');
 
 require __DIR__.'/auth.php';
