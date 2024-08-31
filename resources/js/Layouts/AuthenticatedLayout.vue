@@ -10,6 +10,13 @@ import { Link, usePage } from '@inertiajs/vue3';
 const showingNavigationDropdown = ref(false);
 const authUser = usePage().props.auth.user;
 
+const props = defineProps({
+    user: {
+        type: Object
+    },
+    post: Object
+});
+
 </script>
 
 <template>
@@ -33,7 +40,7 @@ const authUser = usePage().props.auth.user;
                                 
                             </div>
                         </div>
-
+                        <!-- {{ authUser.avatar_path }} -->
                         <div class="hidden sm:flex sm:items-center sm:ms-6">
                             <!-- Settings Dropdown -->
                             <div class="ms-3 relative">
@@ -42,12 +49,15 @@ const authUser = usePage().props.auth.user;
                                         <span class="inline-flex rounded-md">
                                             <button
                                                 type="button"
-                                                class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 dark:text-gray-400 bg-white dark:bg-gray-800 hover:text-gray-700 dark:hover:text-gray-300 focus:outline-none transition ease-in-out duration-150"
+                                                class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition"
                                             >
-                                            {{ authUser.name }}
+                                            <img class="w-[50px] rounded-full object-cover" :src="authUser.avatar_url || 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?t=st=1724940896~exp=1724944496~hmac=d6e3c518f7006a0981fed325a166229e22701117330bc6a3a365075f48bc807b&w=740'"/>
+                                            </button>
+
+                                            <!-- {{ authUser.name }} -->
                                                 <!-- <img src="https://ui-avatars.com/api/?name={{ urlencode(auth()->$user()->name) }}&color=7f9cf5&background=EBF4FF" width="50px" class="mr-2 rounded-full" /> -->
 
-                                                <svg
+                                                <!-- <svg
                                                     class="ms-2 -me-0.5 h-4 w-4"
                                                     xmlns="http://www.w3.org/2000/svg"
                                                     viewBox="0 0 20 20"
@@ -58,8 +68,7 @@ const authUser = usePage().props.auth.user;
                                                         d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z"
                                                         clip-rule="evenodd"
                                                     />
-                                                </svg>
-                                            </button>
+                                                </svg> -->
                                         </span>
                                     </template>
 
