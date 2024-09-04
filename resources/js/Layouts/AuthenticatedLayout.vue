@@ -51,7 +51,7 @@ const props = defineProps({
                                                 type="button"
                                                 class="flex text-sm border-2 border-transparent rounded-full focus:outline-none focus:border-gray-300 transition"
                                             >
-                                            <img class="w-[50px] rounded-full object-cover" :src="authUser.avatar_url || 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?t=st=1724940896~exp=1724944496~hmac=d6e3c518f7006a0981fed325a166229e22701117330bc6a3a365075f48bc807b&w=740'"/>
+                                            <img class="w-[50px] h-[50px] rounded-full object-cover" :src="authUser.avatar_url || 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?t=st=1724940896~exp=1724944496~hmac=d6e3c518f7006a0981fed325a166229e22701117330bc6a3a365075f48bc807b&w=740'"/>
                                             </button>
 
                                             <!-- {{ authUser.name }} -->
