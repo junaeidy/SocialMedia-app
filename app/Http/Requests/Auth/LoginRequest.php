@@ -45,7 +45,7 @@ class LoginRequest extends FormRequest
             RateLimiter::hit($this->throttleKey());
 
             throw ValidationException::withMessages([
-                'email' => trans('Login failed! Please check your email and password again'),
+                'email' => trans('These credentials do not match our records.'),
             ]);
         }
 
