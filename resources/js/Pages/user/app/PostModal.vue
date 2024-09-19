@@ -24,21 +24,19 @@ const props = defineProps({
     },
     modelValue: Boolean
 })
-const form = useForm({
-    id: null,
-    body: ''
-})
 /**
  * {
- *    file: File,
- *    url: '',
+ *     file: File,
+ *     url: '',
  * }
  * @type {Ref<UnwrapRef<*[]>>}
  */
-
-
 const attachmentFiles = ref([])
-
+const form = useForm({
+    id: null,
+    body: '',
+    attachments: []
+})
 const show = computed({
     get: () => props.modelValue,
     set: (value) => emit('update:modelValue', value)
@@ -50,24 +48,26 @@ watch(() => props.post, () => {
 })
 function closeModal() {
     show.value = false
+    resetModal();
+}
+function resetModal(){
     form.reset()
     attachmentFiles.value = []
 }
-function submit(){
+function submit() {
+    form.attachments = attachmentFiles.value.map(myFile => myFile.file)
     if (form.id) {
         form.put(route('post.update', props.post.id), {
             preserveScroll: true,
             onSuccess: () => {
-                show.value = false
-                form.reset()
+                closeModal()
             }
         })
     } else {
         form.post(route('post.create'), {
             preserveScroll: true,
             onSuccess: () => {
-                show.value = false
-                form.reset()
+                closeModal()
             }
         })
     }
@@ -82,10 +82,8 @@ async function onAttachmentChoose($event) {
         attachmentFiles.value.push(myFile)
     }
     $event.target.value = null;
-    console.log(attachmentFiles.value);
-    
+    console.log(attachmentFiles.value)
 }
-
 async function readFile(file) {
     return new Promise((res, rej) => {
         if (isImage(file)) {
@@ -95,7 +93,7 @@ async function readFile(file) {
             }
             reader.onerror = rej
             reader.readAsDataURL(file)
-        }else{
+        } else {
             res(null)
         }
     })
@@ -103,12 +101,11 @@ async function readFile(file) {
 function removeFile(myFile) {
     attachmentFiles.value = attachmentFiles.value.filter(f => f !== myFile)
 }
-
 </script>
 <template>
     <teleport to="body">
         <TransitionRoot appear :show="show" as="template">
-            <Dialog as="div" @close="closeModal" class="relative z-10">
+            <Dialog as="div" @close="closeModal" class="relative z-50">
                 <TransitionChild
                     as="template"
                     enter="duration-300 ease-out"
@@ -151,7 +148,9 @@ function removeFile(myFile) {
                                     <PostUserHeader :post="post" :show-time="false" class="mb-4"/>
                                     <ckeditor :editor="editor" v-model="form.body" :config="editorConfig"></ckeditor>
 
-                                    <div class="grid grid-cols-2 lg:grid-cols-3 gap-3 my-3">
+                                    <div class="grid gap-3 my-3" :class="[
+                                        attachmentFiles.length == 1 ?'grid-cols-1' : 'grid-cols-2'
+                                    ]">
                                         <template v-for="(myFile, ind) of attachmentFiles">
 
                                             <div
@@ -165,7 +164,7 @@ function removeFile(myFile) {
 
                                                 <img v-if="isImage(myFile.file)"
                                                      :src="myFile.url"
-                                                     class="object-cover aspect-square"/>
+                                                     class="object-contain aspect-square"/>
                                                 <template v-else>
                                                     <PaperClipIcon class="w-10 h-10 mb-3"/>
 

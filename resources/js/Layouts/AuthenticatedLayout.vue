@@ -30,7 +30,7 @@ const props = defineProps({
                             <div class="shrink-0 flex items-center">
                                 <Link :href="route('home')">
                                     <ApplicationLogo
-                                        class="block h-9 w-auto fill-current text-gray-800 dark:text-gray-200"
+                                        class="block fill-current text-gray-800 dark:text-gray-200 rounded-full w-[50px] h-[50px]"
                                     />
                                 </Link>
                             </div>

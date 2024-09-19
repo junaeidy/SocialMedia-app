@@ -91,9 +91,9 @@ const submit = () => {
             </div>
         </form>
         <div class="py-3 items-center flex justify-center">
-            Don't have an account? <Link v-if="canResetPassword" :href="route('register')" class="underline text-md text-blue-600 dark:text-gray-400 hover:text-blue-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
+            Don't have an account?<span class="ml-1"><Link v-if="canResetPassword" :href="route('register')" class="underline text-md text-blue-600 dark:text-gray-400 hover:text-blue-900 dark:hover:text-gray-100 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800">
                     Register Here
-                </Link>
+                </Link></span> 
         </div>
     </GuestLayout>
 </template>
