@@ -40,7 +40,7 @@ function onModalHide() {
                   @attachmentClick="openAttachmentPreviewModal"
         />
 
-
+        <PostModal :post="editPost" v-model="showEditModal" @hide="onModalHide"/>
         <AttachmentPreviewModal :attachments="previewAttachmentsPost.post?.attachments || []"
                                 v-model:index="previewAttachmentsPost.index"
                                 v-model="showAttachmentsModal"/>

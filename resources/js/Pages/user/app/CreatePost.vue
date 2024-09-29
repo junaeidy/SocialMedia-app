@@ -4,7 +4,6 @@ import {ref} from "vue";
 import InputTextArea from "@/Components/InputTextArea.vue";
 import {useForm , usePage} from "@inertiajs/vue3";
 const authUser = usePage().props.auth.user;
-console.log(authUser)
 const showModal = ref(false)
 const newPost = ref({
     id: null,
