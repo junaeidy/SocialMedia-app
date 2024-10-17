@@ -1,5 +1,5 @@
 <script setup>
-import {onMounted, ref} from 'vue';
+import {onMounted, ref, watch} from 'vue';
 const props = defineProps({
     modelValue: {
         type: String,
@@ -26,12 +26,18 @@ function onInputChange($event) {
 function adjustHeight() {
     if (props.autoResize) {
         input.value.style.height = 'auto';
-        input.value.style.height = input.value.scrollHeight + 'px';
+        input.value.style.height = (input.value.scrollHeight + 1) + 'px';
     }
 }
 
 onMounted(() => {
     adjustHeight()
+})
+watch(() => props.modelValue, () => {
+    console.log("Changed")
+    setTimeout(() => {
+        adjustHeight()
+    }, 10)
 })
 </script>
 
