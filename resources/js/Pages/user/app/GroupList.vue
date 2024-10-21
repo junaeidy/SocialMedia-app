@@ -6,10 +6,6 @@ import {
     DisclosurePanel,
   } from '@headlessui/vue'
 
-import GroupModal from './GroupModal.vue';
-import {ref} from "vue";
-const showNewGroupModal = ref(false)
-const searchKeyword = ref('')
 </script>
 
 <template>
@@ -26,10 +22,7 @@ const searchKeyword = ref('')
                     </div>
                 </DisclosureButton>
                 <DisclosurePanel>
-                    <button @click="showNewGroupModal = true"
-                            class="text-sm bg-indigo-500 hover:bg-indigo-600 text-white rounded py-1 px-2">
-                        new group
-                    </button>
+                    
                     <GroupListItems />
                 </DisclosurePanel>
             </Disclosure>
@@ -37,15 +30,11 @@ const searchKeyword = ref('')
         <div class="h-full overflow-hidden flex-col hidden lg:flex">
             <div class="flex justify-between">
                 <h2 class="text-xl font-bold">My Groups</h2>
-                <button @click="showNewGroupModal = true"
-                        class="text-sm bg-indigo-500 hover:bg-indigo-600 text-white rounded py-1 px-2">
-                    new group
-                </button>
+                
             </div>
             <GroupListItems/>
         </div>
     </div>
-    <GroupModal v-model="showNewGroupModal"/>
 </template>
 <style scoped>
 </style>
