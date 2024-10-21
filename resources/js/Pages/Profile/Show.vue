@@ -102,7 +102,7 @@ function submitAvatarImage() {
                 {{ errors.cover }}
             </div>
             <div class="group relative bg-white">
-                <img :src="coverImageSrc || user.cover_url || 'https://images.pexels.com/photos/1293125/pexels-photo-1293125.jpeg?auto=compress&cs=tinysrgb&w=1260&h=750&dpr=1'"
+                <img :src="coverImageSrc || user.cover_url || '/img/defaultCover.jpg'"
                      class="w-full h-[200px] object-cover">
                      <div v-if="isMyProfile" class="absolute top-2 right-2">
                     <button v-if="!coverImageSrc" class="bg-gray-50 hover:bg-gray-100 text-gray-800 py-1 px-2 text-xs flex items-center opacity-0 group-hover:opacity-100">
@@ -126,7 +126,7 @@ function submitAvatarImage() {
                     </div>
                 <div class="flex">
                     <div class="flex items-center justify-center relative group/avatar -mt-[64px] ml-[48px] w-[128px] h-[128px] rounded-full">
-                        <img :src="avatarImageSrc || user.avatar_url || 'https://img.freepik.com/free-vector/businessman-character-avatar-isolated_24877-60111.jpg?t=st=1724940896~exp=1724944496~hmac=d6e3c518f7006a0981fed325a166229e22701117330bc6a3a365075f48bc807b&w=740'"
+                        <img :src="avatarImageSrc || user.avatar_url || '/img/defaultAvatar.jpg'"
                              class="w-full h-full object-cover rounded-full">
                         <div v-if="isMyProfile">
                             <button
