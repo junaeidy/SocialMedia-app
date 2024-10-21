@@ -1,10 +1,17 @@
 <script setup>
-import GroupItems from '@/Pages/user/app/GroupItems.vue';
+import GroupItems from './GroupItems.vue';
 import TextInput from '@/Components/TextInput.vue';
 import {ref} from "vue";
 import GroupModal from './GroupModal.vue';
 const searchKeyword = ref('')
 const showNewGroupModal = ref(false)
+
+const props = defineProps({
+    groups: Array
+})
+function onGroupCreate(group) {
+    props.groups.unshift(group)
+}
 </script>
 
 <template>
@@ -20,111 +27,10 @@ const showNewGroupModal = ref(false)
             You are not joined to any groups
         </div>
         <div v-else>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Laravel Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Vue.js Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Laravel Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Vue.js Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Laravel Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Vue.js Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Laravel Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Vue.js Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Laravel Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Vue.js Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Laravel Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Vue.js Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Laravel Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Vue.js Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Laravel Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Vue.js Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Laravel Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Vue.js Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Laravel Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Vue.js Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Laravel Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Vue.js Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Laravel Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Vue.js Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Laravel Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Vue.js Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Laravel Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Vue.js Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Laravel Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Vue.js Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Laravel Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Vue.js Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Laravel Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <GroupItems image="https://picsum.photos/100"
-                       title="Vue.js Developers"
-                       description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
+            <GroupItems v-for="group of groups" :group="group"/>
         </div>
     </div>
-    <GroupModal v-model="showNewGroupModal"/>
+    <GroupModal v-model="showNewGroupModal" @create="onGroupCreate"/>
 </template>
 
 <style scoped>
