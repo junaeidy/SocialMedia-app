@@ -69,6 +69,7 @@ function submitCoverImage() {
     showNotification.value = true
     imagesForm.post(route('profile.updateImages'), {
         onSuccess: (user) => {
+            showNotification.value = true
             resetCoverImage()
             setTimeout(() => {
                 showNotification.value = false
@@ -79,6 +80,7 @@ function submitCoverImage() {
 function submitAvatarImage() {
     imagesForm.post(route('profile.updateImages'), {
         onSuccess: (user) => {
+            showNotification.value = true
             resetAvatarImage()
             setTimeout(() => {
                 showNotification.value = false

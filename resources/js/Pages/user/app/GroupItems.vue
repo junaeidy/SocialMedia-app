@@ -1,4 +1,5 @@
 <script setup>
+import {Link} from '@inertiajs/vue3'
     defineProps({
         group: Object,
     })
@@ -6,7 +7,7 @@
 
 <template>
     <div class="cursor-pointer hover:bg-gray-100">
-    <div class="flex mb-3 items-start gap-1 py-2 px-3">
+        <Link :href="route('group.profile', group.slug)" class="flex items-start gap-1 py-2 px-2">
         <img :src="group.thumbnail_url" class="w-[32px] rounded-full"/>
             <div class="flex-1">
                 <div class="flex justify-between">
@@ -14,8 +15,8 @@
                     {{ group.status === 'approved' ? (group.role === 'admin' ? group.role : '') : 'not approved'}}
                 </div>
                 <div class="text-xs text-gray-500">{{ group.description }}</div>
-        </div>
-    </div>
+            </div>
+        </Link>
   </div>
 </template>
 
