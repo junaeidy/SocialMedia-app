@@ -28,9 +28,7 @@ Route::get('/g/{group:slug}', [GroupController::class, 'profile'])->name('group.
 
 Route::middleware('auth')->group(function () {
 
-    Route::post('/group/update-images/{group:slug}', [GroupController::class, 'updateImage'])
-        ->name('group.updateImages');
-//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+    //     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::post('/profile/update-images', [ProfileController::class, 'updateImage'])->name('profile.updateImages');
     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
@@ -43,10 +41,14 @@ Route::middleware('auth')->group(function () {
     Route::delete('/comment/{comment}', [PostController::class, 'deleteComment'])->name('comment.delete');
     Route::put('/comment/{comment}', [PostController::class, 'updateComment'])->name('comment.update');
     Route::post('/comment/{comment}/reaction', [PostController::class, 'commentReaction'])->name('comment.reaction');
-
+    
     //Groups Route
-
+    
     Route::post('/group', [GroupController::class, 'store'])->name('group.create');
+    Route::post('/group/update-images/{group:slug}', [GroupController::class, 'updateImage'])->name('group.updateImages');
+    Route::get('/group/approve-invitation/{token}', [GroupController::class, 'approveInvitation'])->name('group.approveInvitation');
+    Route::post('/group/invite/{group:slug}', [GroupController::class, 'inviteUsers'])->name('group.inviteUsers');
+
 });
 
 require __DIR__.'/auth.php';

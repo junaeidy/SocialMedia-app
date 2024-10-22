@@ -8,26 +8,24 @@ import {
     DialogPanel,
     DialogTitle,
 } from '@headlessui/vue'
-import {useForm} from "@inertiajs/vue3";
+import {useForm, usePage} from "@inertiajs/vue3";
 import TextInput from "@/Components/TextInput.vue";
 import Checkbox from "@/Components/Checkbox.vue";
-import InputTextArea from '@/Components/InputTextArea.vue';
+import InputTextArea from "@/Components/InputTextArea.vue";
 import axiosClient from "@/axiosClient.js";
 const props = defineProps({
     modelValue: Boolean
 })
+const page = usePage()
 const formErrors = ref({});
 const form = useForm({
-    name: '',
-    auto_approval: true,
-    about: '',
+    email: '',
 })
 const show = computed({
     get: () => props.modelValue,
     set: (value) => emit('update:modelValue', value)
 })
 const emit = defineEmits(['update:modelValue', 'hide', 'create'])
-
 function closeModal() {
     show.value = false
     emit('hide')
@@ -38,11 +36,15 @@ function resetModal() {
     formErrors.value = {}
 }
 function submit() {
-    axiosClient.post(route('group.create'), form)
-        .then(({data}) => {
+    form.post(route('group.inviteUsers', page.props.group.slug), {
+        onSuccess(res) {
+            console.log(res)
             closeModal()
-        emit('create', data)
-        })
+        },
+        onError(res) {
+            console.log(res)
+        }
+    })
 }
 </script>
 <template>
@@ -80,7 +82,7 @@ function submit() {
                                     as="h3"
                                     class="flex items-center justify-between py-3 px-4 font-medium bg-gray-100 text-gray-900"
                                 >
-                                    Create new Group
+                                    Invite Users
                                     <button @click="closeModal"
                                             class="w-8 h-8 rounded-full hover:bg-black/5 transition flex items-center justify-center">
                                         <XMarkIcon class="w-4 h-4"/>
@@ -88,24 +90,16 @@ function submit() {
                                 </DialogTitle>
                                 <div class="p-4">
                                     <div class="mb-3">
-                                        <label>Group Name</label>
+                                        <label>Username or email</label>
                                         <TextInput
                                             type="text"
                                             class="mt-1 block w-full"
-                                            v-model="form.name"
+                                            :class="page.props.errors.email ? 'border-red-500 focus:border-red-500 focus:ring-red-500' : ''"
+                                            v-model="form.email"
                                             required
                                             autofocus
                                         />
-                                    </div>
-                                    <div class="mb-3">
-                                        <label>
-                                            <Checkbox name="remember" v-model:checked="form.auto_approval"/>
-                                            Enable Auto Approval
-                                        </label>
-                                    </div>
-                                    <div class="mb-3">
-                                        <label>About Group</label>
-                                        <InputTextArea v-model="form.about" class="w-full"/>
+                                        <div class="text-red-500">{{page.props.errors.email}}</div>
                                     </div>
                                 </div>
                                 <div class="flex justify-end gap-2 py-3 px-4">
