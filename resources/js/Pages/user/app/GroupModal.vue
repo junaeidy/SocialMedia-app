@@ -108,8 +108,8 @@ function submit() {
                                         <InputTextArea v-model="form.about" class="w-full"/>
                                     </div>
                                 </div>
-                                <div class="flex justify-end gap-2 py-3 px-4">
-                                    <button @click="closeModal"
+                                <div  @click="closeModal" class="flex justify-end gap-2 py-3 px-4">
+                                    <button 
                                         class="text-gray-800 flex gap-1 items-center justify-center bg-gray-100 rounded-md hover:bg-gray-200 py-2 px-4"
                                     >
                                         <XMarkIcon class="w-5 h-5"/>
