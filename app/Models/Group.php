@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\Auth;
 use App\Http\Enums\GroupUserRole;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
+use App\Http\Enums\GroupUserStatus;
 
 class Group extends Model
 {
@@ -39,5 +40,16 @@ class Group extends Model
     {
         return $this->belongsToMany(User::class, 'group_users')
             ->wherePivot('role', GroupUserRole::ADMIN->value);
+    }
+
+    public function pendingUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'group_users')
+            ->wherePivot('status', GroupUserStatus::PENDING->value);
+    }
+    public function approvedUsers(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class, 'group_users')
+            ->wherePivot('status', GroupUserStatus::APPROVED->value);
     }
 }

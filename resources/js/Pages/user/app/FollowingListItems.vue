@@ -1,5 +1,5 @@
 <script setup>
-import FollowingItems from '@/Pages/user/app/FollowingItems.vue';
+import UserListItems from './UserListItems.vue';
 import TextInput from '@/Components/TextInput.vue';
 import {ref} from "vue";
 const searchKeyword = ref('')
@@ -12,48 +12,7 @@ const searchKeyword = ref('')
             You don't have friends yet.
         </div>
         <div v-else>
-            <FollowingItems image="https://picsum.photos/100"
-                           title="John Doe"
-                           description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <FollowingItems image="https://picsum.photos/100"
-                           title="Elon Musk"
-                           description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <FollowingItems image="https://picsum.photos/100"
-                           title="John Doe"
-                           description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <FollowingItems image="https://picsum.photos/100"
-                           title="Elon Musk"
-                           description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <FollowingItems image="https://picsum.photos/100"
-                           title="John Doe"
-                           description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <FollowingItems image="https://picsum.photos/100"
-                           title="Elon Musk"
-                           description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <FollowingItems image="https://picsum.photos/100"
-                           title="John Doe"
-                           description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <FollowingItems image="https://picsum.photos/100"
-                           title="Elon Musk"
-                           description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <FollowingItems image="https://picsum.photos/100"
-                           title="John Doe"
-                           description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <FollowingItems image="https://picsum.photos/100"
-                           title="Elon Musk"
-                           description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <FollowingItems image="https://picsum.photos/100"
-                           title="John Doe"
-                           description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <FollowingItems image="https://picsum.photos/100"
-                           title="Elon Musk"
-                           description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <FollowingItems image="https://picsum.photos/100"
-                           title="John Doe"
-                           description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
-            <FollowingItems image="https://picsum.photos/100"
-                           title="Elon Musk"
-                           description="Lorem ipsum dolor sit amet, consectetur adipisicing elit."/>
+            
         </div>
     </div>
 </template>
