@@ -7,6 +7,10 @@ import {
 } from '@headlessui/vue'
 import {ref} from "vue";
 const searchKeyword = ref('')
+
+defineProps({
+    users: Array
+})
 </script>
 
 <template>
@@ -24,13 +28,13 @@ const searchKeyword = ref('')
                     </div>
                 </DisclosureButton>
                 <DisclosurePanel>
-                    <FollowingListItems/>
+                    <FollowingListItems :users="users"/>
                 </DisclosurePanel>
             </Disclosure>
         </div>
         <div class="h-full overflow-hidden flex-col hidden lg:flex">
             <h2 class="text-xl font-bold">My Followings</h2>
-            <FollowingListItems/>
+            <FollowingListItems :users="users"/>
         </div>
     </div>
 </template>

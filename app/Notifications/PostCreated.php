@@ -6,13 +6,14 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use App\Models\User;
 class PostCreated extends Notification
 {
     use Queueable;
     /**
      * Create a new notification instance.
      */
-    public function __construct(public Post $post, public Group $group)
+    public function __construct(public Post $post, public User $user, public ?Group $group = null)
     {
         //
     }
@@ -31,9 +32,10 @@ class PostCreated extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('New post was added in "'.$this->group->name.'".')
-                    ->action('View Post', url(route('post.view', $this->post->id)))
-                    ->line('Thank you for using our application!');
+            ->lineIf(!!$this->group, 'New post was added by' . $this->user->name . ' in group ' . $this->group?->name . '.')
+            ->lineIf(!$this->group, 'New post was added by' . $this->user->name . '')
+            ->action('View Post', url(route('post.view', $this->post->id)))
+            ->line('Thank you for using our application!');
     }
     /**
      * Get the array representation of the notification.
