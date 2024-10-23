@@ -13,6 +13,7 @@ import TextInput from "@/Components/TextInput.vue";
 import GroupForm from '../user/app/GroupForm.vue';
 import PostList from '../user/app/PostList.vue';
 import CreatePost from '../user/app/CreatePost.vue';
+import TabPhotos from '../user/app/TabPhotos.vue';
 
 const imagesForm = useForm({
     thumbnail: null,
@@ -37,6 +38,7 @@ const props = defineProps({
     posts: Object,
     users: Array,
     requests: Array,
+    photos: Array
 });
 
 const aboutForm = useForm({
@@ -311,7 +313,7 @@ function updateGroup(){
                             </div>
                         </TabPanel>
                         <TabPanel class="bg-white p-3 shadow">
-                            Photos
+                            <TabPhotos :photos="photos" />
                         </TabPanel>
                         <TabPanel class="bg-white p-3 shadow">
                             <template v-if="isCurrentUserAdmin">

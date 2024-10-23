@@ -2,7 +2,7 @@
 import {computed, ref} from 'vue'
 import {XMarkIcon, CheckCircleIcon, CameraIcon} from '@heroicons/vue/24/solid'
 import {TabGroup, TabList, Tab, TabPanels, TabPanel} from '@headlessui/vue'
-import {usePage} from "@inertiajs/vue3";
+import {usePage, Head} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import TabItems from './Partials/TabItems.vue';
 import Edit from './Edit.vue';
@@ -13,6 +13,8 @@ import CreatePost from '../user/app/CreatePost.vue';
 import PostList from '../user/app/PostList.vue';
 import UserListItems from '../user/app/UserListItems.vue';
 import TextInput from '@/Components/TextInput.vue';
+import PostAttachments from '../user/app/PostAttachments.vue';
+import TabPhotos from '../user/app/TabPhotos.vue';
 
 const imagesForm = useForm({
     avatar: null,
@@ -47,6 +49,7 @@ const props = defineProps({
     posts: Object,
     followers: Array,
     followings: Array,
+    photos: Array
 });
 
 function onCoverChange(event) {
@@ -120,6 +123,7 @@ function followUser() {
 </script>
 
 <template>
+    <Head :title = user.name />
     <AuthenticatedLayout>
         <div class="max-w-[768px] mx-auto h-full overflow-auto">
             <div class="px-4">
@@ -279,7 +283,7 @@ function followUser() {
                             </div>
                         </TabPanel>
                         <TabPanel>
-                            Photos
+                            <TabPhotos :photos="photos" />
                         </TabPanel>
                         <TabPanel v-if="isMyProfile">
                             <Edit :must-verify-email="mustVerifyEmail" :status="status"/>

@@ -2,20 +2,22 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Post;
 use App\Models\User;
 use Inertia\Inertia;
 use Inertia\Response;
+use App\Models\Follower;
 use Illuminate\Http\Request;
+use App\Models\PostAttachment;
+use App\Http\Resources\PostResource;
 use App\Http\Resources\UserResource;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\ProfileUpdateRequest;
+use App\Http\Resources\PostAttachmentResource;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
-use App\Models\Follower;
-use App\Http\Resources\PostResource;
-use App\Models\Post;
 
 class ProfileController extends Controller
 {
@@ -40,6 +42,12 @@ class ProfileController extends Controller
             $followers = $user->followers;
             $followings = $user->followings;
 
+            $photos = PostAttachment::query()
+            ->where('mime', 'like', 'image/%')
+            ->where('created_by', $user->id)
+            ->latest()
+            ->get();
+
         return Inertia::render('Profile/Show', [
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => session('status'),
@@ -50,6 +58,7 @@ class ProfileController extends Controller
             'posts' => $posts,
             'followers' => UserResource::collection($followers),
             'followings' => UserResource::collection($followings),
+            'photos' => PostAttachmentResource::collection($photos)
         ]);
     }
     public function updateImage(Request $request) {
