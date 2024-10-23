@@ -14,26 +14,50 @@ use Illuminate\Support\Facades\Redirect;
 use App\Http\Requests\ProfileUpdateRequest;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use App\Models\Follower;
+use App\Http\Resources\PostResource;
+use App\Models\Post;
 
 class ProfileController extends Controller
 {
     /**
      * Display the user's profile form.
      */
-    public function index(User $user)
+    public function index(Request $request, User $user)
     {
         $isCurrentUserFollower = false;
         if (!Auth::guest()) {
             $isCurrentUserFollower = Follower::where('user_id', $user->id)->where('follower_id', Auth::id())->exists();
         }
         $followerCount = Follower::where('user_id', $user->id)->count();
+
+        $posts = Post::postsForTimeline(Auth::id())
+        ->where('user_id', $user->id)
+        ->paginate(10);
+            $posts = PostResource::collection($posts);
+            if ($request->wantsJson()) {
+                return $posts;
+            }
+            $followers = User::query()
+                ->select('users.*')
+                ->join('followers AS f', 'f.follower_id', 'users.id')
+                ->where('f.user_id', $user->id)
+                ->get();
+            $followings = User::query()
+                ->select('users.*')
+                ->join('followers AS f', 'f.user_id', 'users.id')
+                ->where('f.follower_id', $user->id)
+                ->get();
+
         return Inertia::render('Profile/Show', [
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,
             'status' => session('status'),
             'success' => session('success'),
             'isCurrentUserFollower' => $isCurrentUserFollower,
             'followerCount' => $followerCount,
-            'user' => new UserResource($user)
+            'user' => new UserResource($user),
+            'posts' => $posts,
+            'followers' => UserResource::collection($followers),
+            'followings' => UserResource::collection($followings),
         ]);
     }
     public function updateImage(Request $request) {
