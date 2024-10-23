@@ -31,7 +31,7 @@ class RequestToJoinGroup extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('User "'.$this->user->name.'" requested to join to group "'.$this->group->name.'"')
+                    ->line(''.$this->user->name.' requested to join to group '.$this->group->name.'')
                     ->action('Approve Request', url(route('group.profile', $this->group)))
                     ->line('Thank you for using our application!');
     }

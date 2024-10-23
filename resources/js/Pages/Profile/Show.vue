@@ -1,7 +1,7 @@
 <script setup>
 import {computed, ref} from 'vue'
 import {TabGroup, TabList, Tab, TabPanels, TabPanel} from '@headlessui/vue'
-import {usePage} from "@inertiajs/vue3";
+import {usePage, Head} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import TabItems from './Partials/TabItems.vue';
 import Edit from "@/Pages/Profile/Edit.vue";
@@ -94,6 +94,7 @@ function submitAvatarImage() {
 </script>
 
 <template>
+    <Head :title= user.name  />
     <AuthenticatedLayout>
         <div class="w-[768px] mx-auto h-full overflow-auto">
             <div class="my-2 py-2 px-3 text-white font-medium text-sm bg-emerald-600 dark:text-green-400" v-show="showNotification && success">

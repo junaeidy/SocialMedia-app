@@ -2,7 +2,7 @@
 import {computed, ref} from 'vue'
 import {XMarkIcon, CheckCircleIcon, CameraIcon} from '@heroicons/vue/24/solid'
 import {TabGroup, TabList, Tab, TabPanels, TabPanel} from '@headlessui/vue'
-import {usePage} from "@inertiajs/vue3";
+import {usePage, Head} from "@inertiajs/vue3";
 import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout.vue";
 import TabItems from '../Profile/Partials/TabItems.vue';
 import {useForm} from '@inertiajs/vue3'
@@ -36,7 +36,7 @@ const props = defineProps({
     },
     posts: Object,
     users: Array,
-    requests: Array
+    requests: Array,
 });
 
 const aboutForm = useForm({
@@ -122,6 +122,20 @@ function rejectUser(user) {
         preserveScroll: true
     })
 }
+
+function deleteUser(user) {
+    console.log("111")
+    if (!window.confirm(`Are you sure you want to remove user "${user.name}" from this group?`)) {
+        return false;
+    }
+    const form = useForm({
+        user_id: user.id,
+    })
+    form.delete(route('group.removeUser', props.group.slug), {
+        preserveScroll: true
+    })
+}
+
 function onRoleChange(user, role) {
     console.log(user, role)
     const form = useForm({
@@ -140,6 +154,7 @@ function updateGroup(){
 }
 </script>
 <template>
+    <Head :title= group.name  />
     <AuthenticatedLayout>
         <div class="max-w-[768px] mx-auto h-full overflow-auto">
             <div class="px-4">
@@ -274,7 +289,8 @@ function updateGroup(){
                                               :show-role-dropdown="isCurrentUserAdmin"
                                               :disable-role-dropdown="group.user_id === user.id"
                                               class="shadow rounded-lg"
-                                              @role-change="onRoleChange"/>
+                                              @role-change="onRoleChange"
+                                              @delete="deleteUser"/>
                             </div>
                         </TabPanel>
                         <TabPanel v-if="isCurrentUserAdmin" class="">

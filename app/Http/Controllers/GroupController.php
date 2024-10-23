@@ -29,6 +29,7 @@ use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
 use App\Http\Resources\PostResource;
 use App\Models\Post;
+use App\Notifications\UserRemovedFromGroup;
 
 class GroupController extends Controller
 
@@ -237,7 +238,30 @@ class GroupController extends Controller
             $groupUser->save();
             $user = $groupUser->user;
             $user->notify(new RequestApproved($groupUser->group, $user, $approved));
-            return back()->with('success', 'User '.$user->name.' was '.($approved ? 'approved' : 'rejected'));
+            return back()->with('success', ''.$user->name.' was '.($approved ? 'approved' : 'rejected'));
+        }
+        return back();
+    }
+
+    public function removeUser(Request $request, Group $group)
+    {
+        if (!$group->isAdmin(Auth::id())) {
+            return response("You don't have permission to perform this action", 403);
+        }
+        $data = $request->validate([
+            'user_id' => ['required'],
+        ]);
+        $user_id = $data['user_id'];
+        if ($group->isOwner($user_id)) {
+            return response("The owner of the group cannot be removed", 403);
+        }
+        $groupUser = GroupUser::where('user_id', $user_id)
+            ->where('group_id', $group->id)
+            ->first();
+        if ($groupUser) {
+            $user = $groupUser->user;
+            $groupUser->delete();
+            $user->notify(new UserRemovedFromGroup($group));
         }
         return back();
     }
@@ -262,7 +286,7 @@ class GroupController extends Controller
             $groupUser->role = $data['role'];
             $groupUser->save();
             $groupUser->user->notify(new RoleChanged($group, $data['role']));
-            return back();
         }
+        return back();
     }
 }

@@ -30,7 +30,7 @@ class RoleChanged extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('Your role was changed into "'.$this->role.'" for group "'.$this->group->name.'".')
+                    ->line('Your role was changed into '.$this->role.' for group '.$this->group->name.'.')
                     ->action('Open Group', url(route('group.profile', $this->group)))
                     ->line('Thank you for using our application!');
     }

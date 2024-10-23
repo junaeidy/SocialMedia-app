@@ -30,7 +30,7 @@ class InvitationInGroup extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return ( new MailMessage )
-            ->line('You have been invited to join to group "' . $this->group->name . '"')
+            ->line('You have been invited to join to group ' . $this->group->name . '')
             ->action('Join the Group', url(route('group.approveInvitation', $this->token)))
             ->line('The link will be valid for next ' . $this->hours . ' hours');
     }

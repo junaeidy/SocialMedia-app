@@ -32,7 +32,7 @@ class InvitationApproved extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('User "'.$this->user->name.'" has join to group "'.$this->group->name.'"')
+                    ->line(''.$this->user->name.' has join to group '.$this->group->name.'')
                     ->action('Open Group', url(route('group.profile', $this->group)))
                     ->line('Thank you for using our application!');
     }
