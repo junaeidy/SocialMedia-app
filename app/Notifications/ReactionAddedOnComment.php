@@ -32,9 +32,9 @@ class ReactionAddedOnComment extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return ( new MailMessage )
-            ->line('' . $this->user->username . ' has liked your comment. Your comment: ')
+            ->line('' . $this->user->name . ' has liked your comment. Your comment: ')
             ->line('"'.$this->comment->comment.'"')
-            ->action('View Post', url('/'))
+            ->action('View Post', url(route('post.view', $this->post->id)))
             ->line('Thank you for using our application!');
     }
     /**

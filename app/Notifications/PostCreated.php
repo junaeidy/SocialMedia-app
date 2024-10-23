@@ -31,8 +31,8 @@ class PostCreated extends Notification
     public function toMail(object $notifiable): MailMessage
     {
         return (new MailMessage)
-                    ->line('New post was added in "'.$this->group->slug.'".')
-                    ->action('View Post', url('/'))
+                    ->line('New post was added in "'.$this->group->name.'".')
+                    ->action('View Post', url(route('post.view', $this->post->id)))
                     ->line('Thank you for using our application!');
     }
     /**

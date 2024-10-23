@@ -24,10 +24,24 @@ use App\Notifications\PostCreated;
 use App\Notifications\ReactionAddedOnComment;
 use App\Notifications\ReactionAddedOnPost;
 use Illuminate\Support\Facades\Notification;
+use App\Http\Resources\PostResource;
 
 
 class PostController extends Controller
 {
+    public function view(Post $post)
+    {
+        $post->loadCount('reactions');
+        $post->load([
+            'comments' => function ($query) {
+                $query->withCount('reactions'); // SELECT * FROM comments WHERE post_id IN (1, 2, 3...)
+                // SELECT COUNT(*) from reactions
+            },
+        ]);
+        return inertia('Post/View', [
+            'post' => new PostResource($post)
+        ]);
+    }
 
     /**
      * Store a newly created resource in storage.
@@ -183,7 +197,7 @@ class PostController extends Controller
             'parent_id' => $data['parent_id'] ?: null
         ]);
         $post = $comment->post;
-        $post->user->notify(new CommentCreated($comment));
+        $post->user->notify(new CommentCreated($comment, $post));
         return response(new CommentResource($comment), 201);
     }
 
