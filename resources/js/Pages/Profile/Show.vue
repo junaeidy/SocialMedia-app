@@ -8,9 +8,13 @@ import Edit from "@/Pages/Profile/Edit.vue";
 import PrimaryButton from "@/Components/PrimaryButton.vue";
 import {XMarkIcon, CheckCircleIcon, CameraIcon} from '@heroicons/vue/24/solid';
 import {useForm} from '@inertiajs/vue3'
+import DangerButton from '@/Components/DangerButton.vue';
 
 
-let coverImageFile = null
+const imagesForm = useForm({
+    avatar: null,
+    cover: null,
+})
 const showNotification = ref(true)
 const coverImageSrc = ref('')
 const avatarImageSrc = ref('')
@@ -18,7 +22,6 @@ const authUser = usePage().props.auth.user;
 const isMyProfile = computed(() => authUser && authUser.id === props.user.id)
 const props = defineProps({
     errors: Object,
-
     mustVerifyEmail: {
         type: Boolean,
     },
@@ -28,26 +31,23 @@ const props = defineProps({
     success: {
         type: String,
     },
+    isCurrentUserFollower: Boolean,
+    followerCount: Number,
     user: {
         type: Object
     }
 });
-const imagesForm = useForm({
-    avatar: null,
-    cover: null,
-  })
-
-  function onCoverChange(event){
-  imagesForm.cover = event.target.files[0]
-  if (imagesForm.cover) {
-    const reader = new FileReader()
-    reader.onload = () => {
-      coverImageSrc.value = reader.result;
+function onCoverChange(event) {
+    imagesForm.cover = event.target.files[0]
+    if (imagesForm.cover) {
+        const reader = new FileReader()
+        reader.onload = () => {
+            coverImageSrc.value = reader.result;
+        }
+        reader.readAsDataURL(imagesForm.cover)
     }
-    reader.readAsDataURL(imagesForm.cover)
-  }
- }
- function onAvatarChange(event) {
+}
+function onAvatarChange(event) {
     imagesForm.avatar = event.target.files[0]
     if (imagesForm.avatar) {
         const reader = new FileReader()
@@ -66,7 +66,6 @@ function resetAvatarImage() {
     avatarImageSrc.value = null
 }
 function submitCoverImage() {
-    showNotification.value = true
     imagesForm.post(route('profile.updateImages'), {
         preserveScroll: true,
         onSuccess: (user) => {
@@ -90,6 +89,15 @@ function submitAvatarImage() {
         },
     })
 }
+function followUser() {
+    const form = useForm({
+        follow: !props.isCurrentUserFollower
+    })
+    form.post(route('user.follow', props.user.id), {
+        preserveScroll: true
+    })
+}
+
 
 </script>
 
@@ -158,15 +166,18 @@ function submitAvatarImage() {
                         </div>
                     </div>
                     <div class="flex justify-between items-center flex-1 p-4">
-                        <h2 class="font-bold text-lg">{{ user.name }}</h2>
-                        <!-- <PrimaryButton v-if="isMyProfile">
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5"
-                                 stroke="currentColor" class="w-4 h-4 mr-2">
-                                <path stroke-linecap="round" stroke-linejoin="round"
-                                      d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125"/>
-                            </svg>
-                            Edit Profile
-                        </PrimaryButton> -->
+                        <div>
+                            <h2 class="font-bold text-lg">{{ user.name }}</h2>
+                            <p class="text-xs text-gray-500">{{followerCount}} follower(s)</p>
+                        </div>
+                        <div>
+                            <PrimaryButton v-if="!isCurrentUserFollower" @click="followUser">
+                                Follow User
+                            </PrimaryButton>
+                            <DangerButton v-else @click="followUser">
+                                Unfollow User
+                            </DangerButton>
+                        </div>
                     </div>
                 </div>
             </div>
