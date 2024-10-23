@@ -16,7 +16,7 @@ defineProps({
         default: false
     }
 })
-defineEmits(['approve', 'reject', 'roleChange'])
+defineEmits(['approve', 'reject', 'roleChange', 'delete'])
 </script>
 <template>
     <div class="bg-white transition-all border-2 border-transparent hover:border-indigo-500">
@@ -45,6 +45,10 @@ defineEmits(['approve', 'reject', 'roleChange'])
                         <option :selected="user.role === 'admin'">admin</option>
                         <option :selected="user.role === 'user'">user</option>
                     </select>
+                    <button @click="$emit('delete', user)"
+                            class="text-xs py-1.5 px-2 rounded bg-gray-700 hover:bg-gray-800 text-white ml-3 disabled:bg-gray-500"
+                            :disabled="disableRoleDropdown">delete
+                    </button>
                 </div>
             </div>
         </div>

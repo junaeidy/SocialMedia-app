@@ -1,18 +1,19 @@
 <?php
 namespace App\Notifications;
-use App\Models\Group;
+use App\Models\Comment;
+use App\Models\Post;
 use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
-class RequestApproved extends Notification
+class ReactionAddedOnComment extends Notification
 {
     use Queueable;
     /**
      * Create a new notification instance.
      */
-    public function __construct(public Group $group, public User $user, public bool $approved)
+    public function __construct(public Post $post, public Comment $comment, public User $user)
     {
         //
     }
@@ -30,11 +31,10 @@ class RequestApproved extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
-        $action = ( $this->approved ? 'approved' : 'rejected' );
         return ( new MailMessage )
-            ->subject('Request was ' . $action)
-            ->line('Your request to join to group ' . $this->group->name . ' has been ' . $action)
-            ->action('Open Group', url(route('group.profile', $this->group)))
+            ->line('' . $this->user->username . ' has liked your comment. Your comment: ')
+            ->line('"'.$this->comment->comment.'"')
+            ->action('View Post', url('/'))
             ->line('Thank you for using our application!');
     }
     /**

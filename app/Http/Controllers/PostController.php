@@ -18,6 +18,12 @@ use App\Http\Requests\UpdatePostRequest;
 use App\Http\Requests\UpdateCommentRequest;
 use App\Notifications\CommentDeleted;
 use App\Notifications\PostDeleted;
+use App\Models\User;
+use App\Notifications\CommentCreated;
+use App\Notifications\PostCreated;
+use App\Notifications\ReactionAddedOnComment;
+use App\Notifications\ReactionAddedOnPost;
+use Illuminate\Support\Facades\Notification;
 
 
 class PostController extends Controller
@@ -50,6 +56,11 @@ class PostController extends Controller
                 ]);
             }
             DB::commit();
+            $group = $post->group;
+            if ($group) {
+                $users = $group->approvedUsers()->where('users.id', '!=', $user->id)->get();
+                Notification::send($users, new PostCreated($post, $group));
+            }
         } catch (\Exception $e) {
             foreach ($allFilePaths as $path) {
                 Storage::disk('public')->delete($path);
@@ -147,6 +158,10 @@ class PostController extends Controller
                 'user_id' => $userId,
                 'type' => $data['reaction']
             ]);
+            if (!$post->isOwner($userId)) {
+                $user = User::where('id', $userId)->first();
+                $post->user->notify(new ReactionAddedOnPost($post, $user));
+            }
         }
         $reactions = Reaction::where('object_id', $post->id)->where('object_type', Post::class)->count();
         return response([
@@ -167,6 +182,8 @@ class PostController extends Controller
             'user_id' => Auth::id(),
             'parent_id' => $data['parent_id'] ?: null
         ]);
+        $post = $comment->post;
+        $post->user->notify(new CommentCreated($comment));
         return response(new CommentResource($comment), 201);
     }
 
@@ -213,6 +230,10 @@ class PostController extends Controller
                 'user_id' => $userId,
                 'type' => $data['reaction']
             ]);
+            if (!$comment->isOwner($userId)) {
+                $user = User::where('id', $userId)->first();
+                $comment->user->notify(new ReactionAddedOnComment($comment->post, $comment, $user));
+            }
         }
         $reactions = Reaction::where('object_id', $comment->id)->where('object_type', Comment::class)->count();
         return response([
