@@ -27,6 +27,8 @@ use App\Models\User;
 use App\Notifications\RoleChanged;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules\Enum;
+use App\Http\Resources\PostResource;
+use App\Models\Post;
 
 class GroupController extends Controller
 
@@ -34,9 +36,29 @@ class GroupController extends Controller
     /**
      * Display a listing of the resource.
      */
-    public function profile(Group $group)
+    public function profile(Request $request, Group $group)
     {
         $group->load('currentUserGroup');
+
+        $userId = Auth::id();
+        if ($group->hasApprovedUser($userId)) {
+            $posts = Post::postsForTimeline($userId)
+                ->where('group_id', $group->id)
+                ->paginate(10);
+            $posts = PostResource::collection($posts);
+        } else {
+            return Inertia::render('Group/Show', [
+                'success' => session('success'),
+                'group' => new GroupResource($group),
+                'posts' => null,
+                'users' => [],
+                'requests' => []
+            ]);
+        }
+        if ($request->wantsJson()) {
+            return PostResource::collection($posts);
+        }
+
 
         $users = User::query()
             ->select(['users.*', 'gu.role', 'gu.status', 'gu.group_id'])
@@ -49,6 +71,7 @@ class GroupController extends Controller
         return Inertia::render('Group/Show', [
             'success' => session('success'),
             'group' => new GroupResource($group),
+            'posts' => $posts,
             'users' => GroupUserResource::collection($users),
             'requests' => UserResource::collection($requests)
         ]);
@@ -168,13 +191,13 @@ class GroupController extends Controller
         $adminUser = $groupUser->adminUser;
         $adminUser->notify(new InvitationApproved($groupUser->group, $groupUser->user));
         return redirect(route('group.profile', $groupUser->group))
-            ->with('success', 'You accepted to join to group "' . $groupUser->group->name . '"');
+            ->with('success', 'You accepted to join to group ' . $groupUser->group->name . '');
     }
     public function join(Group $group)
     {
         $user = \request()->user();
         $status = GroupUserStatus::APPROVED->value;
-        $successMessage = 'You have joined to group "' . $group->name . '"';
+        $successMessage = 'You have joined to group ' . $group->name . ' ';
         if (!$group->auto_approval) {
             $status = GroupUserStatus::PENDING->value;
             Notification::send($group->adminUsers, new RequestToJoinGroup($group, $user));
@@ -214,7 +237,7 @@ class GroupController extends Controller
             $groupUser->save();
             $user = $groupUser->user;
             $user->notify(new RequestApproved($groupUser->group, $user, $approved));
-            return back()->with('success', 'User "'.$user->name.'" was '.($approved ? 'approved' : 'rejected'));
+            return back()->with('success', 'User '.$user->name.' was '.($approved ? 'approved' : 'rejected'));
         }
         return back();
     }
