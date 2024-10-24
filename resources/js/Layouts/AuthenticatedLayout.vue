@@ -19,7 +19,7 @@ const props = defineProps({
 });
 
 function search() {
-    router.get(route('search', keywords.value))
+    router.get(route('search', encodeURIComponent(keywords.value)))
 }
 
 </script>
