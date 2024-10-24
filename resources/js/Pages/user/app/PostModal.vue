@@ -12,11 +12,16 @@ import PostUserHeader from './PostUserHeader.vue';
 import {useForm, usePage} from "@inertiajs/vue3";
 import ClassicEditor from "@ckeditor/ckeditor5-build-classic";
 import {isImage} from '@/helpers.js'
+import UrlPreview from './UrlPreview.vue';
 import axiosClient from "@/axiosClient.js";
 
 const editor = ClassicEditor;
 const editorConfig = {
+    mediaEmbed: {
+        removeProviders: ['dailymotion', 'spotify', 'youtube', 'vimeo', 'instagram', 'twitter', 'googleMaps', 'flickr', 'facebook']
+    },
     toolbar: ['bold', 'italic', '|', 'bulletedList', 'numberedList', '|', 'heading', '|', 'outdent', 'indent', '|', 'link', '|', 'blockQuote'],
+
 }
 const props = defineProps({
     post: {
@@ -48,6 +53,8 @@ const form = useForm({
     group_id: null,
     attachments: [],
     deleted_file_ids: [],
+    preview: {},
+    preview_url: null,
     _method: 'POST'
 })
 const show = computed({
@@ -72,8 +79,8 @@ const showExtensionsText = computed(() => {
 
 const emit = defineEmits(['update:modelValue', 'hide'])
 watch(() => props.post, () => {
-    console.log("This is triggered ", props.post)
     form.body = props.post.body || ''
+    onInputChange();
 })
 function closeModal() {
     show.value = false
@@ -183,6 +190,56 @@ function getAIContent() {
         })
 }
 
+function fetchPreview(url) {
+    if (url === form.preview_url) {
+        return;
+    }
+    form.preview_url = url
+    form.preview = {}
+    if (url) {
+        axiosClient.post(route('post.fetchUrlPreview'), {url})
+            .then(({data}) => {
+                form.preview = {
+                    title: data['og:title'],
+                    description: data['og:description'],
+                    image: data['og:image']
+                }
+            })
+            .catch(err => {
+                console.log(err)
+            })
+    }
+}
+function onInputChange() {
+    let url = matchHref()
+    if (!url) {
+        url = matchLink()
+    }
+    fetchPreview(url)
+}
+function matchHref() {
+    // Regular expression to match URLs
+    const urlRegex = /<a.+href="((https?):\/\/[^"]+)"/;
+    // Match the first URL in the HTML content
+    const match = form.body.match(urlRegex);
+    // Check if a match is found
+    if (match && match.length > 0) {
+        return match[1];
+    }
+    return null;
+}
+function matchLink() {
+    // Regular expression to match URLs
+    const urlRegex = /(?:https?):\/\/[^\s<]+/;
+    // Match the first URL in the HTML content
+    const match = form.body.match(urlRegex);
+    // Check if a match is found
+    if (match && match.length > 0) {
+        return match[0];
+    }
+    return null
+}
+
 </script>
 <template>
     <teleport to="body">
@@ -234,8 +291,10 @@ function getAIContent() {
                                     </div>
 
                                     <div class="relative group">
-                                        <ckeditor :editor="editor" v-model="form.body"
-                                                  :config="editorConfig"></ckeditor>
+                                        <ckeditor aria-required="true" :editor="editor" v-model="form.body"
+                                        :config="editorConfig" @input="onInputChange"></ckeditor>
+
+                                        <UrlPreview :preview="form.preview" :url="form.preview_url" />
                                         <button
                                             @click="getAIContent"
                                             :disabled="aiButtonLoading"
@@ -247,7 +306,8 @@ function getAIContent() {
                                                 <path class="opacity-75" fill="currentColor"
                                                       d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
                                             </svg>
-                                            <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                            <svg v-else xmlns="http://www.w3.org/2000/svg" fill="none"
+                                                 viewBox="0 0 24 24"
                                                  stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
                                                 <path stroke-linecap="round" stroke-linejoin="round"
                                                       d="M9.813 15.904L9 18.75l-.813-2.846a4.5 4.5 0 00-3.09-3.09L2.25 12l2.846-.813a4.5 4.5 0 003.09-3.09L9 5.25l.813 2.846a4.5 4.5 0 003.09 3.09L15.75 12l-2.846.813a4.5 4.5 0 00-3.09 3.09zM18.259 8.715L18 9.75l-.259-1.035a3.375 3.375 0 00-2.455-2.456L14.25 6l1.036-.259a3.375 3.375 0 002.455-2.456L18 2.25l.259 1.035a3.375 3.375 0 002.456 2.456L21.75 6l-1.035.259a3.375 3.375 0 00-2.456 2.456zM16.894 20.567L16.5 21.75l-.394-1.183a2.25 2.25 0 00-1.423-1.423L13.5 18.75l1.183-.394a2.25 2.25 0 001.423-1.423l.394-1.183.394 1.183a2.25 2.25 0 001.423 1.423l1.183.394-1.183.394a2.25 2.25 0 00-1.423 1.423z"/>
