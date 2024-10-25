@@ -50,9 +50,9 @@ class Post extends Model
         return $this->hasMany(Comment::class);
     }
 
-    public static function postsForTimeline($userId): Builder
+    public static function postsForTimeline($userId, $getLatest = true): Builder
     {
-        return Post::query() // SELECT * FROM posts
+        $query = Post::query() // SELECT * FROM posts
         ->withCount('reactions') // SELECT COUNT(*) from reactions
         ->with([
             'comments' => function ($query) {
@@ -61,8 +61,12 @@ class Post extends Model
             },
             'reactions' => function ($query) use ($userId) {
                 $query->where('user_id', $userId); // SELECT * from reactions WHERE user_id = ?
-            }])
-            ->latest();
+            }]);
+            if ($getLatest) {
+                $query->latest();
+            }
+            return $query;
+            
     }
 
     public function isOwner($userId)

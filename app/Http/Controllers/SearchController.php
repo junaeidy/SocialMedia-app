@@ -6,6 +6,7 @@ use App\Http\Resources\UserResource;
 use App\Models\Group;
 use App\Models\Post;
 use App\Models\User;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 class SearchController extends Controller
 {
@@ -23,9 +24,8 @@ class SearchController extends Controller
             ->orWhere('about', 'like', "%$search%")
             ->latest()
             ->get();
-        $posts = Post::query()
+        $posts = Post::postsForTimeline(Auth::id())
             ->where('body', 'like', "%$search%")
-            ->latest()
             ->paginate(20);
         $posts = PostResource::collection($posts);
         if ($request->wantsJson()) {
