@@ -140,7 +140,7 @@ function followUser() {
                     {{ errors.cover }}
                 </div>
 
-                <div class="group relative bg-white">
+                <div class="group relative bg-white dark:bg-slate-950 dark:text-gray-100">
                     <img :src="coverImageSrc || user.cover_url || '/img/defaultCover.jpg'"
                          class="w-full h-[200px] object-cover">
                     <div  v-if="isMyProfile" class="absolute top-2 right-2 ">
@@ -222,9 +222,9 @@ function followUser() {
                     </div>
                 </div>
             </div>
-            <div class="border-t p-4 pt-0">
+            <div class="border-t m-4 mt-0">
                 <TabGroup>
-                    <TabList class="flex bg-white">
+                    <TabList class="flex bg-white dark:bg-slate-950 dark:text-white">
                         <Tab v-slot="{ selected }" as="template">
                             <TabItems text="Posts" :selected="selected"/>
                         </Tab>

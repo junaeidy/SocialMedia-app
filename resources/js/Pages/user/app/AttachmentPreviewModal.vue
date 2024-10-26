@@ -9,6 +9,7 @@ import {
     DialogTitle,
 } from '@headlessui/vue'
 import {isImage, isVideo} from "@/helpers.js";
+import BaseModal from './BaseModal.vue';
 const props = defineProps({
     attachments: {
         type: Array,
