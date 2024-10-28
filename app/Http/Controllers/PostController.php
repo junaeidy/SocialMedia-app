@@ -155,7 +155,7 @@ class PostController extends Controller
         return response()->download(Storage::disk('public')->path($attachment->path),$attachment->name);
     }
 
-    public function Reaction(Request $request, Post $post)
+    public function postReaction(Request $request, Post $post)
     {
         $data = $request->validate([
             'reaction' => [Rule::enum(ReactionEnum::class)]

@@ -137,7 +137,7 @@ function sendReaction() {
                     {{ post.current_user_has_reaction ? 'Unlike' : 'Like' }}
                 </button>
                 <DisclosureButton
-                    class="text-gray-800 dark:text-gray-100 flex gap-1 items-center justify-center bg-gray-100 rounded-lg hover:bg-gray-200 py-2 px-4 flex-1"
+                    class="text-gray-800 dark:text-gray-100 flex gap-1 items-center justify-center bg-gray-100 dark:bg-slate-900 dark:hover:bg-slate-800 rounded-lg hover:bg-gray-200  py-2 px-4 flex-1"
                 >
                     <ChatBubbleLeftRightIcon class="w-5 h-5"/>
                     <span class="mr-2">{{ post.num_of_comments }}</span>
