@@ -275,7 +275,7 @@ function updateGroup(){
                             <template v-if="posts">
                                 <CreatePost :group="group"/>
                                 <PostList v-if="posts.data.length" :posts="posts.data" class="flex-1"/>
-                                <div v-else class="py-8 text-center">
+                                <div v-else class="py-8 text-center dark:bg-slate-950 dark:text-white">
                                     There are no posts in this group. Be the first and create it.
                                 </div>
                             </template>
@@ -308,14 +308,14 @@ function updateGroup(){
                                               @approve="approveUser"
                                               @reject="rejectUser"/>
                             </div>
-                            <div class="py-8 text-center">
+                            <div class="py-8 text-center dark:bg-slate-950 dark:text-white">
                                 There are no pending requests.
                             </div>
                         </TabPanel>
-                        <TabPanel class="bg-white p-3 shadow">
+                        <TabPanel>
                             <TabPhotos :photos="photos" />
                         </TabPanel>
-                        <TabPanel class="bg-white p-3 shadow">
+                        <TabPanel>
                             <template v-if="isCurrentUserAdmin">
                                 <GroupForm :form="aboutForm"/>
                                 <PrimaryButton @click="updateGroup">
