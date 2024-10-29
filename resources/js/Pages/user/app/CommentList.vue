@@ -8,9 +8,12 @@ import {usePage, Link} from "@inertiajs/vue3";
 import {ref} from "vue";
 import axiosClient from "@/axiosClient.js";
 import {Disclosure, DisclosureButton, DisclosurePanel} from "@headlessui/vue";
+import EditDeleteDropdownComment from "@/Components/EditDeleteDropdownComment.vue";
 const authUser = usePage().props.auth.user;
+
 const newCommentText = ref('')
 const editingComment = ref(null);
+
 const props = defineProps({
     post: Object,
     data: Object,
@@ -19,8 +22,8 @@ const props = defineProps({
         default: null
     }
 })
-
 const emit = defineEmits(['commentCreate', 'commentDelete']);
+
 function startCommentEdit(comment) {
     console.log(comment)
     editingComment.value = {
@@ -28,6 +31,7 @@ function startCommentEdit(comment) {
         comment: comment.comment.replace(/<br\s*\/?>/gi, '\n') // <br />, <br > <br> <br/>, <br    />
     }
 }
+
 function createComment() {
     axiosClient.post(route('post.comment.create', props.post), {
         comment: newCommentText.value,
@@ -43,23 +47,25 @@ function createComment() {
             emit('commentCreate', data)
         })
 }
+
 function deleteComment(comment) {
     if (!window.confirm('Are you sure you want to delete this comment?')) {
         return false;
     }
     axiosClient.delete(route('comment.delete', comment.id))
         .then(({data}) => {
-            console.log(props.data.comments)
+
             const commentIndex = props.data.comments.findIndex(c => c.id === comment.id)
             props.data.comments.splice(commentIndex, 1)
             console.log(props.data.comments)
             if (props.parentComment) {
-                props.parentComment.num_of_comments--;
+                props.parentComment.num_of_comments -= data.deleted;
             }
-            props.post.num_of_comments--;
+            props.post.num_of_comments-= data.deleted;
             emit('commentDelete', comment)
         })
 }
+
 function updateComment() {
     axiosClient.put(route('comment.update', editingComment.value.id), editingComment.value)
         .then(({data}) => {
@@ -72,6 +78,7 @@ function updateComment() {
             })
         })
 }
+
 function sendCommentReaction(comment) {
     axiosClient.post(route('comment.reaction', comment.id), {
         reaction: 'like'
@@ -81,12 +88,14 @@ function sendCommentReaction(comment) {
             comment.num_of_reactions = data.num_of_reactions;
         })
 }
+
 function onCommentCreate(comment) {
     if (props.parentComment) {
         props.parentComment.num_of_comments++;
     }
     emit('commentCreate', comment)
 }
+
 function onCommentDelete(comment) {
     if (props.parentComment) {
         props.parentComment.num_of_comments--;
@@ -94,11 +103,12 @@ function onCommentDelete(comment) {
     emit('commentDelete', comment)
 }
 </script>
+
 <template>
-    <div class="flex gap-2 mb-3">
+    <div v-if="authUser" class="flex gap-2 mb-3">
         <Link :href="route('profile', authUser.username)">
             <img :src="authUser.avatar_url"
-                 class="w-[40px] rounded-full border-2 transition-all hover:border-blue-500"/>
+                 class="w-[40px] rounded-full border border-2 transition-all hover:border-blue-500"/>
         </Link>
         <div class="flex flex-1">
             <InputTextArea v-model="newCommentText" placeholder="Enter your comment here" rows="1"
@@ -112,7 +122,7 @@ function onCommentDelete(comment) {
                 <div class="flex gap-2">
                     <a href="javascript:void(0)">
                         <img :src="comment.user.avatar_url"
-                             class="w-[40px] rounded-full border-2 transition-all hover:border-blue-500"/>
+                             class="w-[40px] rounded-full border border-2 transition-all hover:border-blue-500"/>
                     </a>
                     <div>
                         <h4 class="font-bold">
@@ -123,7 +133,7 @@ function onCommentDelete(comment) {
                         <small class="text-xs text-gray-400">{{ comment.updated_at }}</small>
                     </div>
                 </div>
-                <EditDeleteDropdown :user="comment.user"
+                <EditDeleteDropdownComment :user="comment.user"
                                     :post="post"
                                     :comment="comment"
                                     @edit="startCommentEdit(comment)"
@@ -133,6 +143,7 @@ function onCommentDelete(comment) {
                 <div v-if="editingComment && editingComment.id === comment.id">
                     <InputTextArea v-model="editingComment.comment" placeholder="Enter your comment here"
                                    rows="1" class="w-full max-h-[160px] resize-none"></InputTextArea>
+
                     <div class="flex gap-2 justify-end">
                         <button @click="editingComment = null" class="rounded-r-none text-indigo-500">cancel
                         </button>
@@ -171,7 +182,12 @@ function onCommentDelete(comment) {
                 </Disclosure>
             </div>
         </div>
+        <div v-if="!data.comments.length" class="py-4 text-center dark:text-gray-100">
+            There are no comments.
+        </div>
     </div>
 </template>
+
 <style scoped>
+
 </style>

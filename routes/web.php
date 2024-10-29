@@ -67,6 +67,8 @@ Route::middleware('auth')->group(function () {
     Route::put('/comment/{comment}', [PostController::class, 'updateComment'])->name('comment.update');
     Route::post('/comment/{comment}/reaction', [PostController::class, 'commentReaction'])->name('comment.reaction');
     Route::get('/search/{search?}', [SearchController::class, 'search'])->name('search');
+    Route::get('/search-group', [SearchController::class, 'searchGroup'])->name('search.group');
+    
 
 });
 

@@ -1,17 +1,19 @@
 <script setup>
 import GroupItems from './GroupItems.vue';
 import TextInput from '@/Components/TextInput.vue';
-import {ref} from "vue";
+import {ref, watch} from "vue";
 import GroupModal from './GroupModal.vue';
-const searchKeyword = ref('')
+import { router } from '@inertiajs/vue3'
 const showNewGroupModal = ref(false)
-
+const searchKeyword = ref('')
 const props = defineProps({
     groups: Array
+    
 })
 function onGroupCreate(group) {
     props.groups.unshift(group)
 }
+
 </script>
 
 <template>

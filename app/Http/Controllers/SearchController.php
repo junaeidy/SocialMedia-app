@@ -8,6 +8,7 @@ use App\Models\Post;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Inertia\Inertia;
 class SearchController extends Controller
 {
     public function search(Request $request, string $search = null)
@@ -38,4 +39,5 @@ class SearchController extends Controller
             'groups' => GroupResource::collection($groups)
         ]);
     }
+
 }
