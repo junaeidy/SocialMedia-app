@@ -12,7 +12,7 @@ defineProps({
 <template>
     <TextInput :model-value="searchKeyword" placeholder="Type to search" class="w-full mt-3"/>
     <div class="mt-3 h-[200px] lg:flex-1 overflow-auto">
-        <div v-if="false" class="text-gray-400 text-center p-3">
+        <div v-if="users.length === 0" class="text-gray-400 text-center p-3">
             You don't have friends yet.
         </div>
         <div v-else>

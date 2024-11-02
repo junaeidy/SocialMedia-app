@@ -25,7 +25,7 @@ function onGroupCreate(group) {
         </button>
     </div>
     <div class="mt-3 h-[200px] lg:flex-1 overflow-auto">
-        <div v-if="false" class="text-gray-400 text-center p-3">
+        <div v-if="groups.length === 0" class="text-gray-400 text-center p-3">
             You are not joined to any groups
         </div>
         <div v-else>

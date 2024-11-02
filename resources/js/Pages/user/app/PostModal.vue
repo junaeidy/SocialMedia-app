@@ -107,7 +107,6 @@ function submit() {
         form.post(route('post.update', props.post.id), {
             preserveScroll: true,
             onSuccess: () => {
-                console.log(res)
                 closeModal()
             },
             onError: (errors) => {
@@ -135,7 +134,6 @@ async function onAttachmentChoose($event) {
         attachmentFiles.value.push(myFile)
     }
     $event.target.value = null;
-    console.log(attachmentFiles.value)
 }
 async function readFile(file) {
     return new Promise((res, rej) => {

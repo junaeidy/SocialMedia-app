@@ -263,6 +263,9 @@ function followUser() {
                                               :key="user.id"
                                               class="shadow rounded-lg"/>
                             </div>
+                            <div v-else-if="isMyProfile" class="text-center py-8">
+                                You are not have followers
+                            </div>
                             <div v-else class="text-center py-8">
                                 User does not have followers.
                             </div>
@@ -277,6 +280,9 @@ function followUser() {
                                               :user="user"
                                               :key="user.id"
                                               class="shadow rounded-lg"/>
+                            </div>
+                            <div v-else-if="isMyProfile" class="text-center py-8">
+                                You are not following anybody
                             </div>
                             <div v-else class="text-center py-8">
                                 The user is not following to anybody
