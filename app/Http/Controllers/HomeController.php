@@ -59,4 +59,9 @@ class HomeController extends Controller
             'followings' => UserResource::collection($user->followings)
         ]);
     }
+
+    public function welcome()
+    {
+        return Inertia::render('Welcome');
+    }
 }

@@ -21,6 +21,10 @@ use App\Http\Controllers\SearchController;
 |
 */
 
+Route::get('/welcome', function () {
+    return Inertia::render('Welcome/Welcome');
+})->name('welcome')->middleware('guest');
+
 Route::middleware('auth', 'verified')->group(function () {
     Route::get('/', [HomeController::class, 'index'])->name('home');
     Route::get('/u/{user:username}', [ProfileController::class, 'index'])->name('profile');
