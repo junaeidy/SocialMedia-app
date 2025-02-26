@@ -5,6 +5,7 @@ namespace App\Http\Resources;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Resources\Json\JsonResource;
+use Laravolt\Avatar\Facade as Avatar;
 
 class UserResource extends JsonResource
 {
@@ -25,7 +26,7 @@ class UserResource extends JsonResource
              "username" => $this->username,
              'pinned_post_id' => $this->pinned_post_id,
              "cover_url" => $this->cover_path ? Storage::url($this->cover_path) : null,
-             "avatar_url" => $this->avatar_path ? Storage::url($this->avatar_path) : '/img/defaultAvatar.jpg',
+             "avatar_url" => $this->avatar_path ? Storage::url($this->avatar_path) : "https://ui-avatars.com/api/?name=" . urlencode($this->name) . "&size=100&background=dfe7fd&color=647acb",
         ];
     }
 }

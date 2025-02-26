@@ -1,6 +1,11 @@
 <script setup>
 import {Link} from '@inertiajs/vue3';
 import {ChevronRightIcon} from "@heroicons/vue/24/solid/index.js";
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
+
 defineProps({
     post: {
         type: Object
@@ -10,6 +15,17 @@ defineProps({
         default: true
     }
 })
+
+const formatTime = (dateString) => {
+    const date = dayjs(dateString);
+    const now = dayjs();
+    
+    if (now.diff(date, 'day') >= 7) {
+        return date.format('YYYY-MM-DD HH:mm:ss');
+    }
+
+    return date.fromNow();
+};
 </script>
 
 <template>
@@ -30,7 +46,7 @@ defineProps({
                     </Link>
                 </template>
             </h4>
-            <small v-if="showTime" class="text-gray-400">{{ post.updated_at }}</small>
+            <small v-if="showTime" class="text-gray-400">{{ formatTime(post.updated_at) }}</small>
         </div>
     </div>
 </template>

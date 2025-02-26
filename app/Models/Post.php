@@ -3,12 +3,13 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Post extends Model
 {
@@ -83,11 +84,22 @@ class Post extends Model
     }
 
     protected static function boot()
-    {
-        parent::boot();
-        static::deleting(function ($post) {
-            $post->deleted_by = auth()->id();
-            $post->save();
-        });
-    }
+{
+    parent::boot();
+
+    static::deleting(function ($post) {
+        // Simpan user yang menghapus
+        $post->deleted_by = auth()->id();
+        $post->save();
+
+        // Hapus semua file di storage yang terkait dengan post ini
+        foreach ($post->attachments as $attachment) {
+            Storage::disk('public')->delete($attachment->path);
+        }
+
+        // Hapus data `post_attachments` dari database (opsional)
+        $post->attachments()->forceDelete();
+    });
+}
+
 }

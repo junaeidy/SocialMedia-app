@@ -79,8 +79,10 @@ class GroupController extends Controller
             ->join('posts AS p', 'p.id', 'post_attachments.post_id')
             ->where('p.group_id', $group->id)
             ->where('mime', 'like', 'image/%')
+            ->whereNull('deleted_at')
             ->latest()
             ->get();
+
 
         return Inertia::render('Group/Show', [
             'success' => session('success'),

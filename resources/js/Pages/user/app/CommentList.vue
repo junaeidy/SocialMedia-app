@@ -9,6 +9,10 @@ import {ref} from "vue";
 import axiosClient from "@/axiosClient.js";
 import {Disclosure, DisclosureButton, DisclosurePanel} from "@headlessui/vue";
 import EditDeleteDropdownComment from "@/Components/EditDeleteDropdownComment.vue";
+import dayjs from 'dayjs';
+import relativeTime from 'dayjs/plugin/relativeTime';
+
+dayjs.extend(relativeTime);
 const authUser = usePage().props.auth.user;
 
 const newCommentText = ref('')
@@ -20,8 +24,24 @@ const props = defineProps({
     parentComment: {
         type: [Object, null],
         default: null
+    },
+    showTime: {
+        type: Boolean,
+        default: true
     }
 })
+
+const formatTime = (dateString) => {
+    const date = dayjs(dateString);
+    const now = dayjs();
+    
+    if (now.diff(date, 'day') >= 7) {
+        return date.format('YYYY-MM-DD HH:mm:ss');
+    }
+
+    return date.fromNow();
+};
+
 const emit = defineEmits(['commentCreate', 'commentDelete']);
 
 function startCommentEdit(comment) {
@@ -108,7 +128,7 @@ function onCommentDelete(comment) {
     <div v-if="authUser" class="flex gap-2 mb-3">
         <Link :href="route('profile', authUser.username)">
             <img :src="authUser.avatar_url"
-                 class="w-[40px] rounded-full border border-2 transition-all hover:border-blue-500"/>
+                 class="w-[45px] h-[45px] rounded-full border border-2 transition-all hover:border-blue-500"/>
         </Link>
         <div class="flex flex-1">
             <InputTextArea v-model="newCommentText" placeholder="Enter your comment here" rows="1"
@@ -120,17 +140,17 @@ function onCommentDelete(comment) {
         <div v-for="comment of data.comments" :key="comment.id" class="mb-4">
             <div class="flex justify-between gap-2">
                 <div class="flex gap-2">
-                    <a href="javascript:void(0)">
+                    <Link :href="route('profile', comment.user.username)">
                         <img :src="comment.user.avatar_url"
-                             class="w-[40px] rounded-full border border-2 transition-all hover:border-blue-500"/>
-                    </a>
+                             class="w-[45px] h-[45px] rounded-full border border-2 transition-all hover:border-blue-500"/>
+                    </Link>
                     <div>
                         <h4 class="font-bold">
-                            <a href="javascript:void(0)" class="hover:underline">
+                            <Link :href="route('profile', comment.user.username)" class="hover:underline">
                                 {{ comment.user.name }}
-                            </a>
+                            </Link>
                         </h4>
-                        <small class="text-xs text-gray-400">{{ comment.updated_at }}</small>
+                        <small v-if="showTime" class="text-gray-400">{{ formatTime(comment.updated_at) }}</small>
                     </div>
                 </div>
                 <EditDeleteDropdownComment :user="comment.user"

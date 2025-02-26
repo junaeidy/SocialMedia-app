@@ -21,6 +21,7 @@
         "@ckeditor/ckeditor5-build-classic": "^43.0.0",
         "@ckeditor/ckeditor5-vue": "^7.0.0",
         "@headlessui/vue": "^1.7.22",
-        "@heroicons/vue": "^2.1.5"
+        "@heroicons/vue": "^2.1.5",
+        "dayjs": "^1.11.13"
     }
 }

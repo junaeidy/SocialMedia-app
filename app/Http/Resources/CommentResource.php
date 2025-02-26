@@ -25,7 +25,7 @@ class CommentResource extends JsonResource
                 "id" => $this->user->id,
                 "name" => $this->user->name,
                 "username" => $this->user->username,
-                "avatar_url" => $this->user->avatar_path ? Storage::url($this->user->avatar_path) : '/img/defaultAvatar.jpg',
+                "avatar_url" => $this->user->avatar_path ? Storage::url($this->user->avatar_path) : "https://ui-avatars.com/api/?name=" . urlencode($this->user->name) . "&size=100&background=dfe7fd&color=647acb",
             ]
         ];
     }

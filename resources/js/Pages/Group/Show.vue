@@ -27,6 +27,7 @@ const searchKeyword = ref('');
 const authUser = usePage().props.auth.user;
 const isCurrentUserAdmin = computed(() => props.group.role === 'admin')
 const isJoinedToGroup = computed(() => props.group.role && props.group.status === 'approved')
+const search = ref('');
 const props = defineProps({
     errors: Object,
     success: {
@@ -154,6 +155,14 @@ function updateGroup(){
         preserveScroll: true
     })
 }
+
+const filteredGroups = computed(() => {
+    if (!search.value) return props.users; // Jika kosong, tampilkan semua
+
+    return props.users.filter(user =>
+        user.name.toLowerCase().includes(search.value.toLowerCase())
+    );
+});
 </script>
 <template>
     <Head :title= group.name  />
@@ -285,10 +294,10 @@ function updateGroup(){
                         </TabPanel>
                         <TabPanel v-if="isJoinedToGroup">
                             <div class="mb-3">
-                                <TextInput :model-value="searchKeyword" placeholder="Type to search" class="w-full"/>
+                                <TextInput v-model="search" placeholder="Type to search" class="w-full"/>
                             </div>
-                            <div class="grid grid-cols-2 gap-3">
-                                <UserListItems v-for="user of users"
+                            <div v-if="filteredGroups.length" class="grid grid-cols-2 gap-3">
+                                <UserListItems v-for="user of filteredGroups"
                                               :user="user"
                                               :key="user.id"
                                               :show-role-dropdown="isCurrentUserAdmin"
@@ -296,6 +305,9 @@ function updateGroup(){
                                               class="shadow rounded-lg"
                                               @role-change="onRoleChange"
                                               @delete="deleteUser"/>
+                            </div>
+                            <div v-else class="text-center py-8">
+                                User not found
                             </div>
                         </TabPanel>
                         <TabPanel v-if="isCurrentUserAdmin" class="">

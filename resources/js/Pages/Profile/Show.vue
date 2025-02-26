@@ -51,6 +51,23 @@ const props = defineProps({
     followings: Array,
     photos: Array
 });
+const search = ref('');
+
+const filteredFollowers = computed(() => {
+    if (!search.value) return props.followers; // Jika kosong, tampilkan semua
+
+    return props.followers.filter(user =>
+        user.name.toLowerCase().includes(search.value.toLowerCase())
+    );
+});
+
+const filteredFollowings = computed(() => {
+    if (!search.value) return props.followings; // Jika kosong, tampilkan semua
+
+    return props.followers.filter(user =>
+        user.name.toLowerCase().includes(search.value.toLowerCase())
+    );
+});
 
 function onCoverChange(event) {
     imagesForm.cover = event.target.files[0]
@@ -245,7 +262,7 @@ function followUser() {
                     <TabPanels class="mt-2">
                         <TabPanel>
                             <template v-if="posts">
-                                <CreatePost />
+                                <CreatePost v-if="isMyProfile" />
                                 <PostList :posts="posts.data" class="flex-1"/>
                             </template>
                              <div v-else class="py-8 text-center dark:text-gray-100">
@@ -254,38 +271,36 @@ function followUser() {
                         </TabPanel>
                         <TabPanel>
                             <div class="mb-3">
-                                <TextInput :model-value="searchFollowersKeyword" placeholder="Type to search"
-                                           class="w-full"/>
+                                <TextInput v-model="search" placeholder="Type to search" class="w-full"/>
                             </div>
-                            <div v-if="followers.length" class="grid grid-cols-2 gap-3">
-                                <UserListItems v-for="user of followers"
-                                              :user="user"
-                                              :key="user.id"
-                                              class="shadow rounded-lg"/>
+
+                            <div v-if="filteredFollowers.length" class="grid grid-cols-2 gap-3">
+                                <UserListItems v-for="user in filteredFollowers"
+                                            :user="user"
+                                            :key="user.id"
+                                            class="shadow rounded-lg"/>
                             </div>
-                            <div v-else-if="isMyProfile" class="text-center py-8">
-                                You are not have followers
-                            </div>
+                            <!-- <div v-else-if="isMyProfile" class="text-center py-8">
+                                You are not following anybody
+                            </div> -->
+                            <!-- Jika Pencarian Tidak Ditemukan -->
                             <div v-else class="text-center py-8">
-                                User does not have followers.
+                                User not found
                             </div>
                         </TabPanel>
                         <TabPanel>
                             <div class="mb-3">
-                                <TextInput :model-value="searchFollowingsKeyword" placeholder="Type to search"
+                                <TextInput v-model="search" placeholder="Type to search"
                                            class="w-full"/>
                             </div>
-                            <div v-if="followings.length" class="grid grid-cols-2 gap-3">
-                                <UserListItems v-for="user of followings"
+                            <div v-if="filteredFollowings.length" class="grid grid-cols-2 gap-3">
+                                <UserListItems v-for="user of filteredFollowings"
                                               :user="user"
                                               :key="user.id"
                                               class="shadow rounded-lg"/>
                             </div>
-                            <div v-else-if="isMyProfile" class="text-center py-8">
-                                You are not following anybody
-                            </div>
                             <div v-else class="text-center py-8">
-                                The user is not following to anybody
+                                User not found
                             </div>
                         </TabPanel>
                         <TabPanel>

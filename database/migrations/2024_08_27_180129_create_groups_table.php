@@ -19,9 +19,9 @@ return new class extends Migration
             $table->string('thumbnail_path', 1024)->nullable();
             $table->boolean('auto_approval')->default(true);
             $table->text('about')->nullable();
-            $table->foreignId('user_id')->constrained('users');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamp('deleted_at')->nullable();
-            $table->timestamp('deleted_by')->nullable()->constrained('users');
+            $table->timestamp('deleted_by')->nullable()->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

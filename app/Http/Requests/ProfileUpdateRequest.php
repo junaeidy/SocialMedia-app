@@ -25,6 +25,7 @@ class ProfileUpdateRequest extends FormRequest
     public function messages()
     {
         return [
+            'username.unique' => 'Username is already in use. Please choose another.',
             'regex' => 'Username can only contain alphanumeric characters, dash (-) and dot(.).'
         ];
     }

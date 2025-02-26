@@ -33,24 +33,29 @@ class ProfileController extends Controller
         $followerCount = Follower::where('user_id', $user->id)->count();
 
         $posts = Post::postsForTimeline(Auth::id(), false)
-        ->leftJoin('users AS u', 'u.pinned_post_id', 'posts.id')
-        ->where('user_id', $user->id)
-        ->whereNull('group_id')
-        ->orderBy('u.pinned_post_id', 'desc')
-        ->orderBy('posts.created_at', 'desc')
-        ->paginate(10);
-            $posts = PostResource::collection($posts);
-            if ($request->wantsJson()) {
-                return $posts;
-            }
-            $followers = $user->followers;
-            $followings = $user->followings;
+            ->leftJoin('users AS u', 'u.pinned_post_id', 'posts.id')
+            ->where('user_id', $user->id)
+            ->whereNull('group_id')
+            ->orderBy('u.pinned_post_id', 'desc')
+            ->orderBy('posts.created_at', 'desc')
+            ->paginate(10);
+        $posts = PostResource::collection($posts);
+        if ($request->wantsJson()) {
+            return $posts;
+        }
+        $followers = $user->followers;
+        $followings = $user->followings;
 
-            $photos = PostAttachment::query()
+        $photos = PostAttachment::query()
+            ->select('post_attachments.*')
+            ->join('posts AS p', 'p.id', '=', 'post_attachments.post_id')
+            ->whereNull('p.deleted_at') // Hanya ambil post yang belum dihapus
             ->where('mime', 'like', 'image/%')
             ->where('created_by', $user->id)
             ->latest()
             ->get();
+
+
 
         return Inertia::render('Profile/Show', [
             'mustVerifyEmail' => $user instanceof MustVerifyEmail,

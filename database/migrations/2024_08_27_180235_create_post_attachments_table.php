@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('name', 255); // test.png
             $table->string('path', 255); //
             $table->string('mime', 25);  // image/png
-            $table->foreignId('created_by')->constrained('users');
+            $table->foreignId('created_by')->constrained('users')->onDelete('cascade');
             $table->timestamp('created_at')->nullable();
         });
     }
