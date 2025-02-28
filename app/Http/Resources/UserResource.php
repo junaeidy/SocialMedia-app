@@ -25,7 +25,7 @@ class UserResource extends JsonResource
              "updated_at" => $this->update_at,
              "username" => $this->username,
              'pinned_post_id' => $this->pinned_post_id,
-             "cover_url" => $this->cover_path ? Storage::url($this->cover_path) : null,
+             "cover_url" => $this->cover_path ? Storage::url($this->cover_path) : "https://tokystorage.s3.amazonaws.com/images/default-cover.png",
              "avatar_url" => $this->avatar_path ? Storage::url($this->avatar_path) : "https://ui-avatars.com/api/?name=" . urlencode($this->name) . "&size=100&background=dfe7fd&color=647acb",
         ];
     }
