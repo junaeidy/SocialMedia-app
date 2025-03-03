@@ -61,11 +61,19 @@ class HomeController extends Controller
 
         $followedUserIds[] = $userId;
 
-        $stories = Story::whereIn('user_id', $followedUserIds) 
-            ->where('created_at', '>=', now()->subDay())
-            ->whereNull('deleted_at')
-            ->latest()
-            ->get();
+        $stories = Story::with('user')
+        ->whereIn('user_id', $followedUserIds) 
+        ->where('created_at', '>=', now()->subDay())
+        ->whereNull('deleted_at')
+        ->latest()
+        ->get()
+        ->map(function ($story) {
+            return [
+                'id' => $story->id,
+                'image' => asset('storage/' . $story->image),
+                'user' => $story->user ? new UserResource($story->user) : null, 
+            ];
+        });
 
         return Inertia::render('Home', [
             'posts' => $posts,
